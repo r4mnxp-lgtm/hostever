@@ -1,0 +1,22 @@
+name: "Deploy VPS"
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    build_deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: "Baixar código"
+              uses: actions/checkout@v4
+
+            - name: "Deploy com SSH"
+              uses: appleboy/ssh-action@master
+              with:
+                host: ${{ secrets.SSH_HOST }}
+                username: ${{ secrets.SSH_USER }}
+                key: ${{ secrets.SSH_PRIVATE_KEY }}
+                script: |
+                    cd /var/www/hostever
+                    git pull origin master
