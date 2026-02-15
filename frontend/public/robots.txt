@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://hostever.com.br/sitemap.xml

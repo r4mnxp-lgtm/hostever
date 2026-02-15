@@ -1,0 +1,12 @@
+backend/node_modules
+backend/.env
+
+frontend/node_modules
+frontend/.env
+
+backend/sandbox-storage/*
+!backend/sandbox-storage/.gitkeep
+backend/sandbox-temp/*
+!backend/sandbox-temp/.gitkeep
+backend/uploads/*
+!backend/uploads/.gitkeep

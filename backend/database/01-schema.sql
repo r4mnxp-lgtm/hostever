@@ -1,0 +1,169 @@
+-- HostEver Database Schema
+-- Sistema de Gerenciamento de Serviços de Hospedagem
+-- Execute este arquivo primeiro para criar todas as tabelas
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- Tabela de usuários
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  phone VARCHAR(50),
+  cpf_cnpj VARCHAR(20),
+  
+  -- Campos de endereço
+  cep VARCHAR(10),
+  street VARCHAR(255),
+  number VARCHAR(20),
+  complement VARCHAR(100),
+  neighborhood VARCHAR(100),
+  city VARCHAR(100),
+  state VARCHAR(2),
+  country VARCHAR(50) DEFAULT 'Brasil',
+  
+  -- Termos e condições
+  accepted_terms BOOLEAN DEFAULT FALSE,
+  accepted_terms_at TIMESTAMP NULL,
+  
+  role ENUM('client', 'admin', 'executive') DEFAULT 'client',
+  status ENUM('active', 'suspended', 'inactive') DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  
+  INDEX idx_email (email),
+  INDEX idx_cpf_cnpj (cpf_cnpj),
+  INDEX idx_role (role),
+  INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabela de serviços (VPS, Dedicados, etc)
+CREATE TABLE IF NOT EXISTS services (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  product_type VARCHAR(100) NOT NULL,
+  product_name VARCHAR(255) NOT NULL,
+  specifications JSON,
+  price DECIMAL(10, 2) NOT NULL,
+  billing_cycle ENUM('monthly', 'yearly') DEFAULT 'monthly',
+  status ENUM('pending', 'active', 'suspended', 'terminated') DEFAULT 'pending',
+  location VARCHAR(10) DEFAULT 'br',
+  vps_id VARCHAR(100),
+  ip_address VARCHAR(50),
+  next_due_date DATE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_user_id (user_id),
+  INDEX idx_status (status),
+  INDEX idx_vps_id (vps_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabela de faturas
+CREATE TABLE IF NOT EXISTS invoices (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  service_id INT,
+  amount DECIMAL(10, 2) NOT NULL,
+  status ENUM('pending', 'paid', 'overdue', 'cancelled') DEFAULT 'pending',
+  due_date DATE NOT NULL,
+  paid_at TIMESTAMP NULL,
+  payment_method VARCHAR(50),
+  payment_id VARCHAR(255),
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL,
+  INDEX idx_user_id (user_id),
+  INDEX idx_service_id (service_id),
+  INDEX idx_status (status),
+  INDEX idx_due_date (due_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabela de tickets de suporte
+CREATE TABLE IF NOT EXISTS tickets (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  service_id INT,
+  subject VARCHAR(255) NOT NULL,
+  priority ENUM('low', 'medium', 'high', 'urgent') DEFAULT 'medium',
+  status ENUM('open', 'in_progress', 'waiting_customer', 'closed') DEFAULT 'open',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  closed_at TIMESTAMP NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL,
+  INDEX idx_user_id (user_id),
+  INDEX idx_service_id (service_id),
+  INDEX idx_status (status),
+  INDEX idx_priority (priority)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabela de respostas dos tickets
+CREATE TABLE IF NOT EXISTS ticket_replies (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  ticket_id INT NOT NULL,
+  user_id INT NOT NULL,
+  message TEXT NOT NULL,
+  attachment VARCHAR(500),
+  is_staff BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_ticket_id (ticket_id),
+  INDEX idx_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabela de logs de atividades
+CREATE TABLE IF NOT EXISTS activity_logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  action VARCHAR(100) NOT NULL,
+  entity_type VARCHAR(50),
+  entity_id INT,
+  description TEXT,
+  ip_address VARCHAR(50),
+  user_agent TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+  INDEX idx_user_id (user_id),
+  INDEX idx_action (action),
+  INDEX idx_entity (entity_type, entity_id),
+  INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabela de serviços de status (para página de status)
+CREATE TABLE IF NOT EXISTS status_services (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description VARCHAR(255),
+  status ENUM('operational', 'degraded', 'partial_outage', 'major_outage') DEFAULT 'operational',
+  display_order INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_display_order (display_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabela de incidentes (para página de status)
+CREATE TABLE IF NOT EXISTS status_incidents (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  severity ENUM('info', 'warning', 'critical') DEFAULT 'info',
+  affected_services JSON,
+  status ENUM('investigating', 'identified', 'monitoring', 'resolved') DEFAULT 'investigating',
+  started_at TIMESTAMP NOT NULL,
+  resolved_at TIMESTAMP NULL,
+  created_by INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+  INDEX idx_status (status),
+  INDEX idx_started_at (started_at),
+  INDEX idx_severity (severity)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+SET FOREIGN_KEY_CHECKS = 1;
