@@ -22,37 +22,47 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+const origins = process.env.ORIGINS.split(",") || [];
+
 // CORS - Permitir TODAS as origens em desenvolvimento
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  if (req.method === 'OPTIONS') {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
     return res.sendStatus(200);
   }
   next();
 });
 
-app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://192.168.1.3:3000'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(
+  cors({
+    origin: [...origins],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 
 app.use(express.json());
 
 // Servir arquivos estáticos (uploads)
-app.use('/uploads', express.static('uploads'));
+app.use("/uploads", express.static("uploads"));
 
-app.get('/api/health', async (req, res) => {
+app.get("/api/health", async (req, res) => {
   const dbStatus = await testConnection();
-  res.json({ 
-    status: 'ok', 
-    message: 'HostEver Backend API is running',
-    database: dbStatus ? 'connected' : 'disconnected',
+  res.json({
+    status: "ok",
+    message: "HostEver Backend API is running",
+    database: dbStatus ? "connected" : "disconnected",
     timestamp: new Date().toISOString(),
   });
 });
@@ -71,10 +81,10 @@ app.use('/api/admin', settingsRoutes);
 app.use('/api/admin', adminUsersRoutes);
 app.use('/api/sandbox', sandboxRoutes);
 
-app.use('/sandbox/preview/:projectId', (req, res, next) => {
+app.use("/sandbox/preview/:projectId", (req, res, next) => {
   const { projectId } = req.params;
   console.log(`📡 Acesso ao preview: ${projectId}`);
-  
+
   const project = projectManager.getProject(projectId);
 
   if (!project) {
@@ -241,7 +251,7 @@ app.use('/sandbox/preview/:projectId', (req, res, next) => {
     `);
   }
 
-  if (project.status !== 'ready' && project.status !== 'running') {
+  if (project.status !== "ready" && project.status !== "running") {
     console.log(`🔄 Projeto em construção: ${projectId} (${project.status})`);
     return res.status(503).send(`
       <!DOCTYPE html>
@@ -301,28 +311,33 @@ app.use('/sandbox/preview/:projectId', (req, res, next) => {
   express.static(servePath)(req, res, next);
 });
 
-setInterval(() => {
-  projectManager.cleanExpiredProjects();
-}, 60 * 60 * 1000);
+setInterval(
+  () => {
+    projectManager.cleanExpiredProjects();
+  },
+  60 * 60 * 1000,
+);
 
 app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(500).json({ 
-    error: 'Internal Server Error', 
-    message: err.message 
+  console.error("Error:", err);
+  res.status(500).json({
+    error: "Internal Server Error",
+    message: err.message,
   });
 });
 
 async function startServer() {
   try {
     const dbConnected = await testConnection();
-    
+
     if (!dbConnected) {
-      console.warn('⚠️ Aviso: Banco de dados não conectado. Algumas funcionalidades podem não funcionar.');
+      console.warn(
+        "⚠️ Aviso: Banco de dados não conectado. Algumas funcionalidades podem não funcionar.",
+      );
     }
-    
+
     startAutomatedJobs();
-    
+
     app.listen(PORT, () => {
       console.log(`
 ╔═══════════════════════════════════════════════════╗
@@ -331,7 +346,7 @@ async function startServer() {
 ║                                                   ║
 ║  Status: ✅ Online                                ║
 ║  Porta: ${PORT}                                      ║
-║  Database: ${dbConnected ? '✅ Conectado' : '❌ Desconectado'}                        ║
+║  Database: ${dbConnected ? "✅ Conectado" : "❌ Desconectado"}                        ║
 ║                                                   ║
 ║  📍 Endpoints:                                    ║
 ║     - /api/health                                 ║
@@ -353,7 +368,7 @@ async function startServer() {
       `);
     });
   } catch (error) {
-    console.error('❌ Erro ao iniciar servidor:', error);
+    console.error("❌ Erro ao iniciar servidor:", error);
     process.exit(1);
   }
 }
