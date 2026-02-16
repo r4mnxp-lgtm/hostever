@@ -4,6 +4,14 @@ import pool from '../config/database.js';
 
 const router = express.Router();
 
+router.options('/create-first-admin', (req, res) => {
+  res.sendStatus(200);
+});
+
+router.options('/check-setup', (req, res) => {
+  res.sendStatus(200);
+});
+
 router.post('/create-first-admin', async (req, res) => {
   try {
     const [admins] = await pool.query('SELECT COUNT(*) as count FROM users WHERE role = ?', ['admin']);

@@ -139,59 +139,178 @@ const Home = () => {
 
       <div className="bg-white text-gray-800 font-sans overflow-x-hidden">
         
-        {/* Top Banner */}
-        <div className="bg-[#FFB833] text-white py-3 relative z-50 border-b border-white/5">
-           <div className="container mx-auto px-4 flex items-center justify-center text-xs md:text-sm tracking-wide">
-              <span className="flex items-center font-bold text-[#FFA500] uppercase mr-3">
-                 <Sparkles className="w-3.5 h-3.5 mr-1.5 fill-current animate-pulse" /> Oferta Exclusiva
-              </span>
-              <span className="text-gray-300 font-light truncate">
-                 Migre sua infraestrutura hoje e ganhe <span className="text-white font-bold">até 50% de desconto</span> no primeiro mês.
-              </span>
-           </div>
-        </div>
+        {/* Top Banner - Migração de Infraestrutura */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-gradient-to-r from-[#FFB833] to-[#FFA500] text-white py-3 relative z-50 overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/hexellence.png')] opacity-10"></div>
+          <motion.div 
+            animate={{ 
+              backgroundPosition: ['0% 0%', '100% 100%'],
+            }}
+            transition={{ 
+              duration: 20, 
+              repeat: Infinity, 
+              repeatType: 'reverse' 
+            }}
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+          />
+          <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-center gap-2 text-center relative z-10">
+            <span className="flex items-center font-bold uppercase text-sm">
+              <Sparkles className="w-4 h-4 mr-2 animate-pulse" /> 
+              Migração de Infraestrutura
+            </span>
+            <span className="text-white/90 font-medium text-sm md:text-base">
+              Ganhe <span className="font-extrabold text-white text-lg px-2 py-0.5 bg-black/20 rounded">50% OFF</span> no primeiro mês + Migração Gratuita
+            </span>
+            <Link to="/products" className="ml-2 text-xs font-bold uppercase underline hover:no-underline transition">
+              Aproveitar →
+            </Link>
+          </div>
+        </motion.div>
 
         {/* Hero Section */}
-        <section className="relative pt-16 pb-20 lg:pt-24 lg:pb-32 overflow-hidden bg-white">
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]"></div>
+        <section className="relative pt-20 pb-24 lg:pt-32 lg:pb-40 overflow-hidden bg-gradient-to-b from-white to-gray-50">
+            <motion.div 
+              className="absolute inset-0"
+              animate={{
+                backgroundPosition: ['0% 0%', '100% 100%'],
+              }}
+              transition={{
+                duration: 30,
+                repeat: Infinity,
+                repeatType: 'reverse'
+              }}
+            >
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02]"></div>
+            </motion.div>
+            
+            {/* Animated gradient orbs */}
+            <motion.div
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.5, 0.3],
+              }}
+              transition={{
+                duration: 8,
+                repeat: Infinity,
+                repeatType: 'reverse'
+              }}
+              className="absolute top-20 right-10 w-72 h-72 bg-gradient-to-br from-[#FFB833]/30 to-[#FFA500]/30 rounded-full blur-3xl"
+            />
+            <motion.div
+              animate={{
+                scale: [1.2, 1, 1.2],
+                opacity: [0.2, 0.4, 0.2],
+              }}
+              transition={{
+                duration: 10,
+                repeat: Infinity,
+                repeatType: 'reverse'
+              }}
+              className="absolute bottom-20 left-10 w-96 h-96 bg-gradient-to-tr from-[#FFA500]/20 to-[#FFB833]/20 rounded-full blur-3xl"
+            />
+            
             <div className="container mx-auto px-4 relative z-20">
                 <div className="flex flex-col lg:flex-row items-center gap-12 xl:gap-20">
                     
                     <div className="lg:w-1/2 text-center lg:text-left">
-                        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-                            <div className="inline-flex items-center gap-2 bg-[#FFA500]/10 px-4 py-2 rounded-full text-xs font-bold text-[#FFA500] mb-6 uppercase tracking-widest border border-[#FFA500]/20 font-sans">
+                        <motion.div 
+                          initial={{ opacity: 0, y: 40 }} 
+                          animate={{ opacity: 1, y: 0 }} 
+                          transition={{ duration: 0.8, ease: "easeOut" }}
+                        >
+                            <motion.div 
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.2, duration: 0.6 }}
+                              className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FFA500]/10 to-[#FFB833]/10 px-5 py-2.5 rounded-full text-xs font-bold text-[#FFA500] mb-6 uppercase tracking-widest border border-[#FFA500]/30 font-sans shadow-lg shadow-[#FFA500]/10"
+                            >
                                 <span className="relative flex h-2 w-2">
                                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFA500] opacity-75"></span>
                                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFA500]"></span>
                                 </span>
-                                Data Centers no Brasil
-                            </div>
+                                Data Centers no Brasil & EUA
+                            </motion.div>
                             
-                            <h1 className="text-4xl lg:text-6xl font-extrabold text-[#FFB833] mb-6 leading-[1.1] tracking-tight font-sora">
+                            <motion.h1 
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.3, duration: 0.8 }}
+                              className="text-4xl lg:text-6xl xl:text-7xl font-extrabold text-[#FFB833] mb-6 leading-[1.1] tracking-tight font-sora"
+                            >
                                 O Poder da <br/>
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFB833] to-[#FFA500]">
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFB833] via-[#FFA500] to-[#FFB833] animate-gradient">
                                     Verdadeira Performance
                                 </span>
-                            </h1>
+                            </motion.h1>
                             
-                            <p className="text-lg text-gray-500 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
-                                Experimente teste push a latência ultrabaixa com nossa rede premium. Servidores VPS e Dedicados projetados para estabilidade crítica e crescimento exponencial.
-                            </p>
+                            <motion.p 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: 0.5, duration: 0.8 }}
+                              className="text-lg lg:text-xl text-gray-600 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light"
+                            >
+                                Experimente latência ultrabaixa com nossa rede premium. Servidores VPS e Dedicados projetados para estabilidade crítica e crescimento exponencial.
+                            </motion.p>
                             
-                            <div className="flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4">
-                                <Button size="lg" className="bg-[#FFA500] hover:bg-[#FFA500] text-white font-bold px-8 h-12 rounded-xl text-sm uppercase tracking-widest shadow-xl shadow-[#FFA500]/20 transition-all hover:scale-105 font-sans w-full sm:w-auto" asChild>
-                                    <Link to="/products">Ver Planos</Link>
+                            <motion.div 
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.7, duration: 0.6 }}
+                              className="flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4"
+                            >
+                                <Button 
+                                  size="lg" 
+                                  className="bg-gradient-to-r from-[#FFB833] to-[#FFA500] hover:from-[#FFA500] hover:to-[#FFB833] text-white font-bold px-10 h-14 rounded-xl text-sm uppercase tracking-widest shadow-2xl shadow-[#FFA500]/30 transition-all hover:scale-105 hover:shadow-[#FFA500]/50 font-sans w-full sm:w-auto group" 
+                                  asChild
+                                >
+                                    <Link to="/products">
+                                      Ver Planos 
+                                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
                                 </Button>
-                                <Button size="lg" variant="outline" className="h-12 px-8 rounded-xl font-bold text-[#FFB833] border-gray-200 hover:bg-gray-50 hover:border-[#FFA500] text-sm uppercase tracking-widest font-sans w-full sm:w-auto" asChild>
-                                    <Link to="/nossa-historia">Conhecer a Empresa</Link>
+                                <Button 
+                                  size="lg" 
+                                  variant="outline" 
+                                  className="h-14 px-10 rounded-xl font-bold text-[#FFB833] border-2 border-gray-300 hover:bg-gradient-to-r hover:from-[#FFB833] hover:to-[#FFA500] hover:text-white hover:border-transparent text-sm uppercase tracking-widest font-sans w-full sm:w-auto transition-all" 
+                                  asChild
+                                >
+                                    <Link to="/nossa-historia">Nossa História</Link>
                                 </Button>
-                            </div>
+                            </motion.div>
 
-                            <div className="mt-8 pt-6 border-t border-gray-100 flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-3 text-sm font-semibold text-gray-500 font-sans">
-                                <div className="flex items-center"><CheckCircle2 className="w-5 h-5 text-[#FFA500] mr-2"/> 99.9% Uptime SLA</div>
-                                <div className="flex items-center"><CheckCircle2 className="w-5 h-5 text-[#FFA500] mr-2"/> Proteção Anti-DDoS</div>
-                                <div className="flex items-center"><CheckCircle2 className="w-5 h-5 text-[#FFA500] mr-2"/> Suporte 24/7</div>
-                            </div>
+                            <motion.div 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: 0.9, duration: 0.8 }}
+                              className="mt-10 pt-8 border-t border-gray-200 flex flex-wrap items-center justify-center lg:justify-start gap-x-8 gap-y-4 text-sm font-semibold text-gray-600 font-sans"
+                            >
+                                <motion.div 
+                                  whileHover={{ scale: 1.05 }}
+                                  className="flex items-center"
+                                >
+                                  <CheckCircle2 className="w-5 h-5 text-[#FFA500] mr-2"/> 
+                                  99.9% Uptime SLA
+                                </motion.div>
+                                <motion.div 
+                                  whileHover={{ scale: 1.05 }}
+                                  className="flex items-center"
+                                >
+                                  <CheckCircle2 className="w-5 h-5 text-[#FFA500] mr-2"/> 
+                                  Proteção Anti-DDoS
+                                </motion.div>
+                                <motion.div 
+                                  whileHover={{ scale: 1.05 }}
+                                  className="flex items-center"
+                                >
+                                  <CheckCircle2 className="w-5 h-5 text-[#FFA500] mr-2"/> 
+                                  Suporte 24/7
+                                </motion.div>
+                            </motion.div>
                         </motion.div>
                     </div>
 
