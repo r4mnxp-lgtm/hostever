@@ -21,6 +21,6 @@ jobs:
             cd /var/www/hostever
             git pull origin master
             cd frontend
-            sudo npm install
-            sudo npm run build
-            sudo pm2 restart all
+            npm install
+            npm run build
+            pm2 restart all
