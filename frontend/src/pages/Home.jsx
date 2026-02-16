@@ -20,7 +20,7 @@ const ProductCard = ({ icon: Icon, title, description, link, delay }) => (
       <Icon className="w-8 h-8 text-[#FFA500] group-hover:text-white transition-colors duration-300" />
     </div>
     
-    <h3 className="text-2xl font-bold text-[#FFB833] mb-4 font-sora tracking-tight group-hover:text-[#FFA500] transition-colors">{title}</h3>
+    <h3 className="text-2xl font-bold text-[#FFB833] mb-4 font-grotesk tracking-tight group-hover:text-[#FFA500] transition-colors">{title}</h3>
     <p className="text-gray-500 flex-grow mb-8 leading-relaxed text-[15px] font-sans text-justify">{description}</p>
     
     <Link to={link} className="inline-flex items-center text-sm font-bold uppercase tracking-widest text-[#FFA500] hover:text-[#FFB833] transition-colors mt-auto group/link">
@@ -41,7 +41,7 @@ const FeatureItem = ({ icon: Icon, title, description, delay }) => (
       <Icon className="w-6 h-6" />
     </div>
     <div>
-      <h3 className="text-lg font-bold text-[#FFB833] font-sora mb-2">{title}</h3>
+      <h3 className="text-lg font-bold text-[#FFB833] font-grotesk mb-2">{title}</h3>
       <p className="text-gray-500 text-sm leading-relaxed">{description}</p>
     </div>
   </motion.div>
@@ -63,7 +63,7 @@ const TestimonialCard = ({ name, role, company, text, delay }) => (
         </div>
         <p className="text-gray-600 mb-6 italic leading-relaxed">"{text}"</p>
         <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#FFA500]/20 flex items-center justify-center text-[#FFA500] font-bold font-sora">
+            <div className="w-10 h-10 rounded-full bg-[#FFA500]/20 flex items-center justify-center text-[#FFA500] font-bold font-grotesk">
                 {name.charAt(0)}
             </div>
             <div>
@@ -240,7 +240,7 @@ const Home = () => {
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: 0.3, duration: 0.8 }}
-                              className="text-4xl lg:text-6xl xl:text-7xl font-extrabold text-[#FFB833] mb-6 leading-[1.1] tracking-tight font-sora"
+                              className="text-4xl lg:text-6xl xl:text-7xl font-extrabold text-[#FFB833] mb-6 leading-[1.1] tracking-tight font-grotesk"
                             >
                                 O Poder da <br/>
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFB833] via-[#FFA500] to-[#FFB833] animate-gradient">
@@ -327,7 +327,7 @@ const Home = () => {
                                 <div className="rounded-xl overflow-hidden relative h-full">
                                     <div className="absolute inset-0 bg-gradient-to-t from-[#FFB833]/50 via-transparent to-transparent z-10"></div>
                                     <img 
-                                        src="https://images.unsplash.com/photo-1577332215047-3712edf14808" 
+                                        src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80" 
                                         alt="Infraestrutura Data Center HostEver" 
                                         className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000" 
                                     />
@@ -349,19 +349,19 @@ const Home = () => {
         <section className="py-16 border-y border-gray-100 bg-gray-50 relative">
              <div className="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
                  <div className="text-center group">
-                     <div className="text-4xl lg:text-5xl font-extrabold text-[#FFB833] mb-2 tracking-tight font-sora group-hover:text-[#FFA500] transition-colors">99.9%</div>
+                     <div className="text-4xl lg:text-5xl font-extrabold text-[#FFB833] mb-2 tracking-tight font-grotesk group-hover:text-[#FFA500] transition-colors">99.9%</div>
                      <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">Uptime Garantido</div>
                  </div>
                  <div className="text-center group">
-                     <div className="text-4xl lg:text-5xl font-extrabold text-[#FFB833] mb-2 tracking-tight font-sora group-hover:text-[#FFA500] transition-colors">&lt; 2ms</div>
+                     <div className="text-4xl lg:text-5xl font-extrabold text-[#FFB833] mb-2 tracking-tight font-grotesk group-hover:text-[#FFA500] transition-colors">&lt; 2ms</div>
                      <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">Latência SP</div>
                  </div>
                  <div className="text-center group">
-                     <div className="text-4xl lg:text-5xl font-extrabold text-[#FFB833] mb-2 tracking-tight font-sora group-hover:text-[#FFA500] transition-colors">Tier III</div>
+                     <div className="text-4xl lg:text-5xl font-extrabold text-[#FFB833] mb-2 tracking-tight font-grotesk group-hover:text-[#FFA500] transition-colors">Tier III</div>
                      <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">Infraestrutura</div>
                  </div>
                  <div className="text-center group">
-                     <div className="text-4xl lg:text-5xl font-extrabold text-[#FFB833] mb-2 tracking-tight font-sora group-hover:text-[#FFA500] transition-colors">24/7</div>
+                     <div className="text-4xl lg:text-5xl font-extrabold text-[#FFB833] mb-2 tracking-tight font-grotesk group-hover:text-[#FFA500] transition-colors">24/7</div>
                      <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">Suporte Humano</div>
                  </div>
              </div>
@@ -372,7 +372,7 @@ const Home = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-20">
               <span className="text-[#FFA500] font-bold uppercase tracking-widest text-xs mb-4 block">Nossas Soluções</span>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-[#FFB833] mb-6 tracking-tight font-sora">
+              <h2 className="text-4xl md:text-5xl font-extrabold text-[#FFB833] mb-6 tracking-tight font-grotesk">
                 Infraestrutura para <span className="text-[#FFA500]">Escalar</span>
               </h2>
               <p className="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-light">
@@ -395,7 +395,7 @@ const Home = () => {
                 <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#FFA500]/10 text-[#FFA500] text-xs font-bold uppercase tracking-wider mb-8 font-sans border border-[#FFA500]/20">
                     Tecnologia de Ponta
                 </div>
-                <h2 className="text-4xl md:text-5xl font-extrabold text-[#FFB833] mb-8 tracking-tight font-sora leading-tight">
+                <h2 className="text-4xl md:text-5xl font-extrabold text-[#FFB833] mb-8 tracking-tight font-grotesk leading-tight">
                   Engenharia que define <br/><span className="text-[#FFA500]">Novos Padrões</span>
                 </h2>
                 <p className="text-lg text-gray-500 mb-12 leading-relaxed font-light text-justify">
@@ -449,7 +449,7 @@ const Home = () => {
         <section className="py-24 bg-white border-t border-gray-100">
            <div className="container mx-auto px-4">
               <div className="text-center mb-16">
-                 <h2 className="text-3xl md:text-4xl font-extrabold text-[#FFB833] mb-4 font-sora">O que dizem <span className="text-[#FFA500]">nossos clientes</span></h2>
+                 <h2 className="text-3xl md:text-4xl font-extrabold text-[#FFB833] mb-4 font-grotesk">O que dizem <span className="text-[#FFA500]">nossos clientes</span></h2>
                  <p className="text-gray-500 max-w-2xl mx-auto">Histórias reais de empresas que escalaram sua infraestrutura com a HostEver.</p>
               </div>
               
@@ -466,7 +466,7 @@ const Home = () => {
             <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#FFA500]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
             
             <div className="container mx-auto px-4 relative z-10 text-center">
-                <h2 className="text-4xl md:text-6xl font-extrabold mb-8 tracking-tight font-sora">Pronto para a <span className="text-[#FFA500]">Evolução?</span></h2>
+                <h2 className="text-4xl md:text-6xl font-extrabold mb-8 tracking-tight font-grotesk">Pronto para a <span className="text-[#FFA500]">Evolução?</span></h2>
                 <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
                     Nossa equipe de especialistas está pronta para desenhar a arquitetura ideal para o seu negócio. Migração gratuita e assistida.
                 </p>

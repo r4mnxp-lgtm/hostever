@@ -42,22 +42,6 @@ const Header = () => {
       badge: 'Mais Popular',
       features: ['Alta performance', 'Discos NVMe', 'Backup diário']
     },
-    {
-      title: 'VPS OPA Suite',
-      description: 'Servidores otimizados para OPA Suite',
-      path: '/servidor-opa',
-      icon: Zap,
-      badge: null,
-      features: ['Otimizado', 'Suporte dedicado', 'Auto-scaling']
-    },
-    {
-      title: 'VPS IXC',
-      description: 'Ambiente preparado para IXC Soft',
-      path: '/servidor-ixc',
-      icon: Briefcase,
-      badge: null,
-      features: ['Pré-configurado', 'Alta disponibilidade', 'Monitoramento 24/7']
-    },
   ];
 
   const dedicatedServices = [

@@ -19,7 +19,8 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
-        sora: ['Sora', 'sans-serif'],
+        grotesk: ['Space Grotesk', 'sans-serif'],
+        sora: ['Space Grotesk', 'sans-serif'],
       },
       colors: {
         hostever: {
