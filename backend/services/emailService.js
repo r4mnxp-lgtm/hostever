@@ -28,11 +28,13 @@ export const initializeEmailService = (config) => {
   }
 };
 
-export const sendWelcomeEmail = async (userEmail, userName) => {
+export const sendWelcomeEmail = async (userEmail, userName, verificationToken) => {
   if (!transporter) {
     console.error('Email service not initialized');
     return false;
   }
+
+  const verificationLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${verificationToken}`;
 
   const template = `
 <!DOCTYPE html>
@@ -58,19 +60,20 @@ export const sendWelcomeEmail = async (userEmail, userName) => {
                                 Olá <strong>${userName}</strong>,
                             </p>
                             <p style="margin: 0 0 20px; color: #333333; font-size: 16px; line-height: 1.6;">
-                                Obrigado por se cadastrar na HostEver! Estamos muito felizes em tê-lo conosco.
-                            </p>
-                            <p style="margin: 0 0 20px; color: #333333; font-size: 16px; line-height: 1.6;">
-                                Sua conta foi criada com sucesso e você já pode acessar nossa plataforma para contratar serviços de hospedagem premium.
+                                Obrigado por se cadastrar na HostEver! Para completar seu cadastro, precisamos que você confirme seu e-mail.
                             </p>
                             <div style="margin: 30px 0; text-align: center;">
-                                <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/client-dashboard" 
+                                <a href="${verificationLink}" 
                                    style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #FFB833 0%, #FFA500 100%); color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
-                                    Acessar Minha Conta
+                                    Confirmar E-mail
                                 </a>
                             </div>
                             <p style="margin: 20px 0 0; color: #666666; font-size: 14px; line-height: 1.6;">
-                                Se você tiver alguma dúvida, nossa equipe de suporte está sempre disponível para ajudar.
+                                Ou copie e cole este link no seu navegador:<br>
+                                <a href="${verificationLink}" style="color: #FFA500; word-break: break-all;">${verificationLink}</a>
+                            </p>
+                            <p style="margin: 20px 0 0; color: #999999; font-size: 12px; line-height: 1.6;">
+                                Este link expira em 24 horas. Se você não solicitou este cadastro, ignore este e-mail.
                             </p>
                         </td>
                     </tr>
@@ -94,7 +97,7 @@ export const sendWelcomeEmail = async (userEmail, userName) => {
     await transporter.sendMail({
       from: `"${process.env.SMTP_FROM_NAME || 'HostEver'}" <${process.env.SMTP_FROM_EMAIL}>`,
       to: userEmail,
-      subject: 'Bem-vindo à HostEver!',
+      subject: 'Confirme seu e-mail - HostEver',
       html: template
     });
     return true;

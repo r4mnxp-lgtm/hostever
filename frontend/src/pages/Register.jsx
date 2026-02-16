@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import PasswordStrengthMeter from '@/components/PasswordStrengthMeter';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    emailConfirm: '',
     password: '',
     phone: '',
     cpfCnpj: '',
@@ -255,6 +257,24 @@ const Register = () => {
       return;
     }
 
+    if (formData.email !== formData.emailConfirm) {
+      showToast({
+        variant: "destructive",
+        title: "E-mails não correspondem",
+        description: "Os e-mails digitados não são iguais",
+      });
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      showToast({
+        variant: "destructive",
+        title: "Senha fraca",
+        description: "A senha deve ter no mínimo 8 caracteres",
+      });
+      return;
+    }
+
     if (!formData.phone) {
       showToast({
         variant: "destructive",
@@ -376,7 +396,7 @@ const Register = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div>
                 <Label htmlFor="email" className="text-gray-900 font-semibold">E-mail *</Label>
                 <Input
@@ -385,10 +405,30 @@ const Register = () => {
                   type="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="seu@email.com"
+                  placeholder="usuario@exemplo.com"
                   className="mt-1.5 h-11"
                   required
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="emailConfirm" className="text-gray-900 font-semibold">Confirmar E-mail *</Label>
+                <Input
+                  id="emailConfirm"
+                  name="emailConfirm"
+                  type="email"
+                  value={formData.emailConfirm}
+                  onChange={handleInputChange}
+                  placeholder="Digite o e-mail novamente"
+                  className="mt-1.5 h-11"
+                  required
+                />
+                {formData.emailConfirm && formData.email !== formData.emailConfirm && (
+                  <p className="text-xs text-red-500 mt-1">Os e-mails não correspondem</p>
+                )}
+                {formData.emailConfirm && formData.email === formData.emailConfirm && (
+                  <p className="text-xs text-green-600 mt-1">✓ E-mails correspondem</p>
+                )}
               </div>
 
               <div>
@@ -399,10 +439,11 @@ const Register = () => {
                   type="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder="Crie uma senha forte"
                   className="mt-1.5 h-11"
                   required
                 />
+                <PasswordStrengthMeter password={formData.password} />
               </div>
             </div>
 

@@ -1,14 +1,38 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Server, Activity, FileText, LifeBuoy, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { Server, Activity, FileText, LifeBuoy, ChevronRight, CheckCircle2, Mail, AlertCircle, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const ClientDashboardHome = () => {
   const { user } = useAuth();
+  const [showAlert, setShowAlert] = useState(true);
+  const [resending, setResending] = useState(false);
+
+  const handleResendEmail = async () => {
+    setResending(true);
+    try {
+      const response = await fetch('/api/auth/resend-verification', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (response.ok) {
+        alert('E-mail de verificação reenviado com sucesso! Verifique sua caixa de entrada.');
+      } else {
+        alert('Erro ao reenviar e-mail. Tente novamente mais tarde.');
+      }
+    } catch (error) {
+      alert('Erro ao conectar com o servidor.');
+    } finally {
+      setResending(false);
+    }
+  };
 
   const container = {
     hidden: { opacity: 0 },
@@ -22,6 +46,41 @@ const ClientDashboardHome = () => {
 
   return (
     <div className="space-y-8">
+      {!user?.email_verified && showAlert && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-lg shadow-sm"
+        >
+          <div className="flex items-start justify-between">
+            <div className="flex items-start gap-3 flex-1">
+              <Mail className="w-5 h-5 text-amber-600 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-amber-900 mb-1">Confirme seu e-mail</h3>
+                <p className="text-sm text-amber-800 mb-3">
+                  Enviamos um e-mail de confirmação para <strong>{user?.email}</strong>. 
+                  Por favor, verifique sua caixa de entrada e confirme seu e-mail para ter acesso completo à plataforma.
+                </p>
+                <Button 
+                  size="sm" 
+                  onClick={handleResendEmail}
+                  disabled={resending}
+                  className="bg-amber-600 hover:bg-amber-700 text-white"
+                >
+                  {resending ? 'Reenviando...' : 'Reenviar E-mail'}
+                </Button>
+              </div>
+            </div>
+            <button 
+              onClick={() => setShowAlert(false)}
+              className="text-amber-600 hover:text-amber-800 p-1"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </motion.div>
+      )}
+
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}

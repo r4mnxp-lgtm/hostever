@@ -24,7 +24,13 @@ CREATE TABLE IF NOT EXISTS system_settings (
 -- 2. Adicionar colunas de categoria e permissões na tabela users
 ALTER TABLE users 
 ADD COLUMN IF NOT EXISTS admin_category VARCHAR(50) DEFAULT NULL,
-ADD COLUMN IF NOT EXISTS permissions JSON DEFAULT NULL;
+ADD COLUMN IF NOT EXISTS permissions JSON DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS email_verification_token VARCHAR(255) DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS email_verification_expires DATETIME DEFAULT NULL;
+
+-- Marcar admins existentes como verificados
+UPDATE users SET email_verified = TRUE WHERE role = 'admin';
 
 -- 3. Inserir configurações padrão
 INSERT INTO system_settings (id, company_name, founded_year, founded_location) 

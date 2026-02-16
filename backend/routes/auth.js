@@ -1,10 +1,12 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { getUserByEmail, createUser, getUserById } from '../models/userModel.js';
 import { createActivityLog } from '../models/activityLogModel.js';
 import { validateCPFCNPJ, fetchAddressByCEP } from '../utils/validators.js';
 import { sendWelcomeEmail } from '../services/emailService.js';
+import pool from '../config/database.js';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'hostever_secret_key_change_in_production';
@@ -115,7 +117,15 @@ router.post('/register', async (req, res) => {
       ip_address: req.ip,
     });
 
-    sendWelcomeEmail(email, name).catch(err => 
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    
+    await pool.query(
+      'UPDATE users SET email_verification_token = ?, email_verification_expires = ? WHERE id = ?',
+      [verificationToken, expiresAt, userId]
+    );
+
+    sendWelcomeEmail(email, name, verificationToken).catch(err => 
       console.error('Error sending welcome email:', err)
     );
 
@@ -207,10 +217,61 @@ router.get('/me', verifyToken, async (req, res) => {
       neighborhood: user.neighborhood,
       city: user.city,
       state: user.state,
+      email_verified: user.email_verified || false,
     });
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({ error: 'Erro ao buscar usuário' });
+  }
+});
+
+router.post('/verify-email', async (req, res) => {
+  try {
+    const { token } = req.body;
+    
+    const [users] = await pool.query(
+      'SELECT * FROM users WHERE email_verification_token = ? AND email_verification_expires > NOW()',
+      [token]
+    );
+    
+    if (users.length === 0) {
+      return res.status(400).json({ error: 'Token inválido ou expirado' });
+    }
+    
+    await pool.query(
+      'UPDATE users SET email_verified = TRUE, email_verification_token = NULL, email_verification_expires = NULL WHERE id = ?',
+      [users[0].id]
+    );
+    
+    res.json({ success: true, message: 'E-mail verificado com sucesso!' });
+  } catch (error) {
+    console.error('Email verification error:', error);
+    res.status(500).json({ error: 'Erro ao verificar e-mail' });
+  }
+});
+
+router.post('/resend-verification', verifyToken, async (req, res) => {
+  try {
+    const user = await getUserById(req.userId);
+    
+    if (user.email_verified) {
+      return res.status(400).json({ error: 'E-mail já verificado' });
+    }
+    
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    
+    await pool.query(
+      'UPDATE users SET email_verification_token = ?, email_verification_expires = ? WHERE id = ?',
+      [verificationToken, expiresAt, req.userId]
+    );
+    
+    await sendWelcomeEmail(user.email, user.name, verificationToken);
+    
+    res.json({ success: true, message: 'E-mail de verificação reenviado!' });
+  } catch (error) {
+    console.error('Resend verification error:', error);
+    res.status(500).json({ error: 'Erro ao reenviar e-mail' });
   }
 });
 

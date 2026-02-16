@@ -90,7 +90,7 @@ const Login = () => {
                   <Input 
                     id="email" 
                     type="email" 
-                    placeholder="voce@exemplo.com" 
+                    placeholder="usuario@exemplo.com" 
                     {...register('email')} 
                     className={`pl-10 h-11 border-gray-200 focus:border-[#FFA500] focus:ring-[#FFA500]/20 ${errors.email ? 'border-red-500' : ''}`} 
                   />

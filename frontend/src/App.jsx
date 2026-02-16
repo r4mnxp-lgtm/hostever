@@ -34,6 +34,8 @@ const BlogHome = lazy(() => import('@/pages/blog/BlogHome'));
 const BlogPost = lazy(() => import('@/pages/blog/BlogPost'));
 const TermosDeUso = lazy(() => import('@/pages/TermosDeUso'));
 const PoliticaDePrivacidade = lazy(() => import('@/pages/PoliticaDePrivacidade'));
+const VerifyEmail = lazy(() => import('@/pages/VerifyEmail'));
+const FirstAdminSetup = lazy(() => import('@/pages/FirstAdminSetup'));
 
 // Client Dashboard Pages
 const ClientDashboardHome = lazy(() => import('@/pages/client-dashboard/ClientDashboardHome'));
@@ -123,6 +125,8 @@ function App() {
               <Route path="/area-do-cliente" element={<Navigate to="/client-dashboard" replace />} />
               <Route path="/login" element={<Login />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
+              <Route path="/setup" element={<FirstAdminSetup />} />
               
               {/* Other */}
               <Route path="/status" element={<Status />} />

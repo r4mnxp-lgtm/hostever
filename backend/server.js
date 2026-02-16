@@ -13,6 +13,7 @@ import servicesRoutes from './routes/services.js';
 import statusRoutes from './routes/status.js';
 import settingsRoutes from './routes/settings.js';
 import adminUsersRoutes from './routes/admin-users.js';
+import setupRoutes from './routes/setup.js';
 import { sandboxRoutes, projectManager } from './routes/sandbox.js';
 import { testConnection } from './config/database.js';
 import { startAutomatedJobs } from './jobs/automatedJobs.js';
@@ -22,9 +23,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const origins = process.env.ORIGINS.split(",") || [];
-
-// CORS - Permitir TODAS as origens em desenvolvimento
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -45,7 +43,7 @@ app.use((req, res, next) => {
 
 app.use(
   cors({
-    origin: [...origins],
+    origin: true,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -68,6 +66,7 @@ app.get("/api/health", async (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/setup', setupRoutes);
 app.use('/api/install', installRoutes);
 app.use('/api/orders', ordersRoutes);
 app.use('/api/mercadopago', mercadopagoRoutes);
