@@ -21,7 +21,7 @@ export const PlanCheckoutButton = ({ plan, planType, location = 'br' }) => {
   return (
     <button
       onClick={handleCheckout}
-      className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center group"
+      className="w-full bg-gradient-to-r from-hostever-primary to-hostever-secondary text-white py-3 px-6 rounded-lg font-semibold shadow-lg shadow-hostever-secondary/25 hover:shadow-xl hover:shadow-hostever-secondary/35 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center group"
     >
       <ShoppingCart className="w-5 h-5 mr-2 group-hover:scale-110 transition" />
       Contratar Agora

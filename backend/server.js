@@ -11,6 +11,8 @@ import ticketsRoutes from './routes/tickets.js';
 import maintenanceRoutes from './routes/maintenance.js';
 import servicesRoutes from './routes/services.js';
 import statusRoutes from './routes/status.js';
+import settingsRoutes from './routes/settings.js';
+import adminUsersRoutes from './routes/admin-users.js';
 import { sandboxRoutes, projectManager } from './routes/sandbox.js';
 import { testConnection } from './config/database.js';
 import { startAutomatedJobs } from './jobs/automatedJobs.js';
@@ -65,6 +67,8 @@ app.use('/api/tickets', ticketsRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/services', servicesRoutes);
 app.use('/api/status', statusRoutes);
+app.use('/api/admin', settingsRoutes);
+app.use('/api/admin', adminUsersRoutes);
 app.use('/api/sandbox', sandboxRoutes);
 
 app.use('/sandbox/preview/:projectId', (req, res, next) => {

@@ -4,7 +4,7 @@ import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, ShoppingBag, Layers, Mail, 
   FileText, LogOut, Menu, ChevronRight, DollarSign,
-  Server, Globe, Ticket, BarChart3, Shield, Activity, Box
+  Server, Globe, Ticket, BarChart3, Shield, Activity, Box, Settings, UserCog
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -30,7 +30,8 @@ const AdminDashboardLayout = () => {
     { icon: FileText, label: 'Faturas', to: '/admin-dashboard/invoices' },
     { icon: Ticket, label: 'Tickets', to: '/admin-dashboard/tickets' },
     { icon: Activity, label: 'Status', to: '/admin-dashboard/status' },
-    { icon: Box, label: 'Sandbox', to: '/admin-dashboard/sandbox' },
+    { icon: UserCog, label: 'Administradores', to: '/admin-dashboard/admins' },
+    { icon: Settings, label: 'Configurações', to: '/admin-dashboard/settings' },
   ];
 
   return (
@@ -99,9 +100,11 @@ const AdminDashboardLayout = () => {
                 <div className="text-sm font-bold text-[#FFB833]">{user?.email}</div>
                 <div className="text-xs text-gray-500 uppercase">{user?.role}</div>
              </div>
-             <div className="w-10 h-10 bg-[#FFA500] rounded-full flex items-center justify-center text-white font-bold shadow-md">
-                {user?.email?.[0].toUpperCase()}
-             </div>
+             <NavLink to="/admin-dashboard/account">
+               <div className="w-10 h-10 bg-[#FFA500] rounded-full flex items-center justify-center text-white font-bold shadow-md hover:bg-[#FF8C00] transition-colors cursor-pointer">
+                  {user?.email?.[0].toUpperCase()}
+               </div>
+             </NavLink>
           </div>
         </header>
 

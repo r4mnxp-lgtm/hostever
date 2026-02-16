@@ -49,10 +49,26 @@ export async function deleteIncident(id) {
 }
 
 export async function getAllServices() {
-  const [rows] = await connection.query('SELECT * FROM status_services ORDER BY display_order');
+  const [rows] = await connection.query('SELECT * FROM status_services ORDER BY created_at DESC');
   return rows;
+}
+
+export async function createService(serviceData) {
+  const { name, category, status, description, url, location } = serviceData;
+  
+  const [result] = await connection.query(
+    `INSERT INTO status_services (name, category, status, description, url, location) 
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [name, category, status || 'operational', description, url, location]
+  );
+  
+  return result.insertId;
 }
 
 export async function updateServiceStatus(id, status) {
   await connection.query('UPDATE status_services SET status = ? WHERE id = ?', [status, id]);
+}
+
+export async function deleteService(id) {
+  await connection.query('DELETE FROM status_services WHERE id = ?', [id]);
 }

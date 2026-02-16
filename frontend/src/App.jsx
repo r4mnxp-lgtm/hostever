@@ -50,7 +50,11 @@ const AdminAllServices = lazy(() => import('@/pages/admin-dashboard/AllServices'
 const AdminAllInvoices = lazy(() => import('@/pages/admin-dashboard/AllInvoices'));
 const AdminTickets = lazy(() => import('@/pages/admin-dashboard/Tickets'));
 const StatusManagement = lazy(() => import('@/pages/admin-dashboard/StatusManagement'));
+const StatusServicesManagement = lazy(() => import('@/pages/admin-dashboard/StatusServicesManagement'));
 const SandboxDashboard = lazy(() => import('@/pages/admin-dashboard/SandboxDashboard'));
+const SystemSettings = lazy(() => import('@/pages/admin-dashboard/SystemSettings'));
+const AdminManagement = lazy(() => import('@/pages/admin-dashboard/AdminManagement'));
+const AccountSettings = lazy(() => import('@/pages/admin-dashboard/AccountSettings'));
 
 const PageLoader = () => (
   <div className="flex h-[calc(100vh-80px)] items-center justify-center">
@@ -165,8 +169,11 @@ function App() {
                 <Route path="services" element={<AdminAllServices />} />
                 <Route path="invoices" element={<AdminAllInvoices />} />
                 <Route path="tickets" element={<AdminTickets />} />
-                <Route path="status" element={<StatusManagement />} />
+                <Route path="status" element={<StatusServicesManagement />} />
                 <Route path="sandbox" element={<SandboxDashboard />} />
+                <Route path="settings" element={<SystemSettings />} />
+                <Route path="admins" element={<AdminManagement />} />
+                <Route path="account" element={<AccountSettings />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />

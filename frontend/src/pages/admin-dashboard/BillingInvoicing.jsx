@@ -7,11 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Search, FileText, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const BillingInvoicing = () => {
-  const [invoices] = useState([
-    { id: 'INV-2024-001', client: 'Tech Corp', amount: 500.00, date: '2024-02-01', status: 'paid' },
-    { id: 'INV-2024-002', client: 'John Doe', amount: 29.90, date: '2024-02-03', status: 'pending' },
-    { id: 'INV-2024-003', client: 'Creative Agency', amount: 150.00, date: '2024-01-25', status: 'overdue' },
-  ]);
+  const [invoices] = useState([]);
 
   return (
     <div className="space-y-6">
@@ -24,19 +20,19 @@ const BillingInvoicing = () => {
          <Card className="bg-blue-50 border-blue-100">
             <CardContent className="p-6">
                <div className="text-sm font-bold text-blue-600 uppercase mb-1">Total Revenue (Month)</div>
-               <div className="text-3xl font-bold text-[#FFB833]">R$ 14.500,00</div>
+               <div className="text-3xl font-bold text-[#FFB833]">R$ 0,00</div>
             </CardContent>
          </Card>
          <Card className="bg-yellow-50 border-yellow-100">
             <CardContent className="p-6">
                <div className="text-sm font-bold text-yellow-600 uppercase mb-1">Pending</div>
-               <div className="text-3xl font-bold text-[#FFB833]">R$ 2.300,00</div>
+               <div className="text-3xl font-bold text-[#FFB833]">R$ 0,00</div>
             </CardContent>
          </Card>
          <Card className="bg-red-50 border-red-100">
             <CardContent className="p-6">
                <div className="text-sm font-bold text-red-600 uppercase mb-1">Overdue</div>
-               <div className="text-3xl font-bold text-[#FFB833]">R$ 450,00</div>
+               <div className="text-3xl font-bold text-[#FFB833]">R$ 0,00</div>
             </CardContent>
          </Card>
       </div>

@@ -27,7 +27,6 @@ const ClientDashboardLayout = () => {
     { icon: Server, label: 'Meus Serviços', to: '/client-dashboard/services' },
     { icon: FileText, label: 'Faturas', to: '/client-dashboard/invoices' },
     { icon: MessageSquare, label: 'Suporte', to: '/client-dashboard/support' },
-    { icon: Box, label: 'Testar Sites', to: '/client-dashboard/sandbox' },
   ];
 
   return (

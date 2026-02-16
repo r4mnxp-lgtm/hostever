@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { getUserByEmail, createUser, getUserById } from '../models/userModel.js';
 import { createActivityLog } from '../models/activityLogModel.js';
 import { validateCPFCNPJ, fetchAddressByCEP } from '../utils/validators.js';
+import { sendWelcomeEmail } from '../services/emailService.js';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'hostever_secret_key_change_in_production';
@@ -113,6 +114,10 @@ router.post('/register', async (req, res) => {
       description: `Novo usuário registrado: ${name}`,
       ip_address: req.ip,
     });
+
+    sendWelcomeEmail(email, name).catch(err => 
+      console.error('Error sending welcome email:', err)
+    );
 
     const user = await getUserById(userId);
 
