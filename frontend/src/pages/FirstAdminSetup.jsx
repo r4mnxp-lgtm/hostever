@@ -38,6 +38,7 @@ const FirstAdminSetup = () => {
       }
     } catch (error) {
       console.error('Error checking setup:', error);
+      setNeedsSetup(true);
     } finally {
       setChecking(false);
     }

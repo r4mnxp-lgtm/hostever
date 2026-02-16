@@ -26,7 +26,7 @@ router.post('/create-first-admin', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const [result] = await pool.query(
-      'INSERT INTO users (name, email, password, role, status, admin_category, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO users (name, email, password_hash, role, status, admin_category, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [name, email, hashedPassword, 'admin', 'active', 'admin', true]
     );
 
