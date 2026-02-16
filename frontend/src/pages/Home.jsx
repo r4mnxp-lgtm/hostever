@@ -175,7 +175,7 @@ const Home = () => {
                             </h1>
                             
                             <p className="text-lg text-gray-500 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
-                                Experimente a latência ultrabaixa com nossa rede premium. Servidores VPS e Dedicados projetados para estabilidade crítica e crescimento exponencial.
+                                Experimente teste push a latência ultrabaixa com nossa rede premium. Servidores VPS e Dedicados projetados para estabilidade crítica e crescimento exponencial.
                             </p>
                             
                             <div className="flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4">
