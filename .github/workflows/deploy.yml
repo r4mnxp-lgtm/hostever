@@ -20,7 +20,9 @@ jobs:
           script: |
             cd /var/www/hostever
             git pull origin master
-            cd frontend
+            cd /var/www/hostever/frontend
             npm install
             npm run build
+            cd /var/www/hostever/backend
+            npm install
             pm2 restart all
