@@ -11,7 +11,7 @@ import PasswordStrengthMeter from '@/components/PasswordStrengthMeter';
 
 const Register = () => {
   const navigate = useNavigate();
-  const { signUp } = useAuth();
+  const { signUp, signIn } = useAuth();
   const toastHook = useToast();
   
   const showToast = useCallback((options) => {
@@ -340,6 +340,8 @@ const Register = () => {
         state: formData.state,
         accepted_terms: true,
       });
+
+      await signIn(formData.email, formData.password);
       
       showToast({
         title: "Conta criada!",
