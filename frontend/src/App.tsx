@@ -21,8 +21,6 @@ const Products = lazy(() => import('@/pages/Products'));
 const VpsCloud = lazy(() => import('@/pages/VpsCloud'));
 const VpsEconomy = lazy(() => import('@/pages/VpsEconomy'));
 const VpsGames = lazy(() => import('@/pages/VpsGames'));
-const ServidorOpa = lazy(() => import('@/pages/ServidorOpa'));
-const ServidorIxc = lazy(() => import('@/pages/ServidorIxc'));
 const DedicatedServer = lazy(() => import('@/pages/DedicatedServer'));
 const Colocation = lazy(() => import('@/pages/Colocation'));
 const Register = lazy(() => import('@/pages/Register'));
@@ -115,8 +113,6 @@ function App() {
               <Route path="/vps-cloud" element={<VpsCloud />} />
               <Route path="/vps-economy" element={<VpsEconomy />} />
               <Route path="/vps-games" element={<VpsGames />} />
-              <Route path="/servidor-opa" element={<ServidorOpa />} />
-              <Route path="/servidor-ixc" element={<ServidorIxc />} />
               <Route path="/dedicated-server" element={<DedicatedServer />} />
               <Route path="/colocation" element={<Colocation />} />
               

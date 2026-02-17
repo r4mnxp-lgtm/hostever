@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import {
   getUserByEmail,
+  getUserByCpfCnpj,
+  getUserByPhone,
   createUser,
   getUserById,
 } from "../models/userModel.js";
@@ -91,6 +93,20 @@ router.post("/register", async (req, res) => {
     console.log(existingUser);
     if (existingUser) {
       return res.status(400).json({ error: "E-mail já cadastrado" });
+    }
+
+    if (cpf_cnpj) {
+      const existingCpfCnpj = await getUserByCpfCnpj(cpf_cnpj);
+      if (existingCpfCnpj) {
+        return res.status(400).json({ error: "CPF/CNPJ já cadastrado" });
+      }
+    }
+
+    if (phone) {
+      const existingPhone = await getUserByPhone(phone);
+      if (existingPhone) {
+        return res.status(400).json({ error: "Telefone já cadastrado" });
+      }
     }
 
     const password_hash = await bcrypt.hash(password, 10);

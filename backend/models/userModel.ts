@@ -14,6 +14,16 @@ export async function getUserByEmail(email) {
   return results[0];
 }
 
+export async function getUserByCpfCnpj(cpfCnpj) {
+  const results = await query('SELECT * FROM users WHERE cpf_cnpj = ?', [cpfCnpj]);
+  return results[0];
+}
+
+export async function getUserByPhone(phone) {
+  const results = await query('SELECT * FROM users WHERE phone = ?', [phone]);
+  return results[0];
+}
+
 export async function createUser(userData) {
   const { 
     email, 

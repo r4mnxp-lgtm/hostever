@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "node server.ts",
+    "dev": "node --watch server.ts"
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
@@ -20,5 +20,16 @@
     "node-cron": "^3.0.3",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.8"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.2.3",
+    "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^7.0.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }

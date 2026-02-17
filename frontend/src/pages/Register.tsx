@@ -30,6 +30,7 @@ const Register = () => {
     email: '',
     emailConfirm: '',
     password: '',
+    passwordConfirm: '',
     phone: '',
     cpfCnpj: '',
     cep: '',
@@ -275,6 +276,15 @@ const Register = () => {
       return;
     }
 
+    if (formData.password !== formData.passwordConfirm) {
+      showToast({
+        variant: "destructive",
+        title: "Senhas não correspondem",
+        description: "As senhas digitadas não são iguais",
+      });
+      return;
+    }
+
     if (!formData.phone) {
       showToast({
         variant: "destructive",
@@ -446,6 +456,26 @@ const Register = () => {
                   required
                 />
                 <PasswordStrengthMeter password={formData.password} />
+              </div>
+
+              <div>
+                <Label htmlFor="passwordConfirm" className="text-gray-900 font-semibold">Confirmar Senha *</Label>
+                <Input
+                  id="passwordConfirm"
+                  name="passwordConfirm"
+                  type="password"
+                  value={formData.passwordConfirm}
+                  onChange={handleInputChange}
+                  placeholder="Digite a senha novamente"
+                  className="mt-1.5 h-11"
+                  required
+                />
+                {formData.passwordConfirm && formData.password !== formData.passwordConfirm && (
+                  <p className="text-xs text-red-500 mt-1">As senhas não correspondem</p>
+                )}
+                {formData.passwordConfirm && formData.password === formData.passwordConfirm && formData.password.length >= 8 && (
+                  <p className="text-xs text-green-600 mt-1">✓ Senhas correspondem</p>
+                )}
               </div>
             </div>
 
