@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MessageSquare, RefreshCw, Plus, Send, X, AlertCircle } from 'lucide-react';
+import { MessageSquare, RefreshCw, Plus, Send, X, AlertCircle, Clock, CheckCircle2, Timer, XCircle } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
@@ -65,199 +65,216 @@ export default function Support() {
     }
   };
 
-  const getStatusColor = (status) => {
-    const colors = {
-      open: 'bg-blue-100 text-blue-800',
-      in_progress: 'bg-yellow-100 text-yellow-800',
-      closed: 'bg-gray-100 text-gray-800',
-      resolved: 'bg-green-100 text-green-800'
+  const getStatusConfig = (status) => {
+    const configs = {
+      open: { 
+        icon: Clock, 
+        color: 'bg-blue-50 border-blue-200 text-blue-700',
+        badge: 'bg-blue-100 text-blue-800 border-blue-200',
+        text: 'Aberto'
+      },
+      in_progress: { 
+        icon: Timer, 
+        color: 'bg-amber-50 border-amber-200 text-amber-700',
+        badge: 'bg-amber-100 text-amber-800 border-amber-200',
+        text: 'Em Progresso'
+      },
+      resolved: { 
+        icon: CheckCircle2, 
+        color: 'bg-emerald-50 border-emerald-200 text-emerald-700',
+        badge: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+        text: 'Resolvido'
+      },
+      closed: { 
+        icon: XCircle, 
+        color: 'bg-gray-50 border-gray-200 text-gray-700',
+        badge: 'bg-gray-100 text-gray-800 border-gray-200',
+        text: 'Fechado'
+      }
     };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+    return configs[status] || configs.open;
   };
 
-  const getStatusText = (status) => {
-    const texts = {
-      open: 'Aberto',
-      in_progress: 'Em Progresso',
-      closed: 'Fechado',
-      resolved: 'Resolvido'
+  const getPriorityConfig = (priority) => {
+    const configs = {
+      low: { color: 'text-gray-600 bg-gray-50 border-gray-200', text: 'Baixa' },
+      medium: { color: 'text-yellow-700 bg-yellow-50 border-yellow-200', text: 'Média' },
+      high: { color: 'text-orange-700 bg-orange-50 border-orange-200', text: 'Alta' },
+      urgent: { color: 'text-red-700 bg-red-50 border-red-200', text: 'Urgente' }
     };
-    return texts[status] || status;
-  };
-
-  const getPriorityColor = (priority) => {
-    const colors = {
-      low: 'text-gray-600',
-      medium: 'text-yellow-600',
-      high: 'text-orange-600',
-      urgent: 'text-red-600'
-    };
-    return colors[priority] || 'text-gray-600';
-  };
-
-  const getPriorityText = (priority) => {
-    const texts = {
-      low: 'Baixa',
-      medium: 'Média',
-      high: 'Alta',
-      urgent: 'Urgente'
-    };
-    return texts[priority] || priority;
+    return configs[priority] || configs.medium;
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <RefreshCw className="w-8 h-8 animate-spin text-[#FFA500]" />
+        <RefreshCw className="w-8 h-8 animate-spin text-[#FFB833]" />
       </div>
     );
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8 flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Suporte</h1>
-          <p className="mt-2 text-gray-600">Gerencie seus tickets de suporte</p>
+      <div className="mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Central de Suporte</h1>
+            <p className="text-gray-600">Gerencie seus tickets e obtenha ajuda da nossa equipe</p>
+          </div>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-[#FFB833] to-[#FFA500] hover:from-[#FFA500] hover:to-[#FF8C00] shadow-lg shadow-orange-500/30 transition-all duration-200 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            Novo Ticket
+          </button>
         </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#FFA500] hover:bg-[#0d8bc7] transition-colors"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Novo Ticket
-        </button>
       </div>
 
       {tickets.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-          <MessageSquare className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum ticket encontrado</h3>
-          <p className="text-gray-600">Você ainda não criou nenhum ticket de suporte.</p>
+        <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <MessageSquare className="w-10 h-10 text-blue-600" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">Nenhum ticket encontrado</h3>
+          <p className="text-gray-600 mb-6">Você ainda não criou nenhum ticket de suporte.</p>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="inline-flex items-center px-6 py-3 bg-[#FFB833] text-white rounded-xl hover:bg-[#FFA500] transition-all duration-200 font-semibold"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            Criar Primeiro Ticket
+          </button>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Assunto
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Prioridade
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Data
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Ações
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {tickets.map((ticket) => (
-                  <tr key={ticket.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      #{ticket.id}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
-                      {ticket.subject}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <span className={`font-medium ${getPriorityColor(ticket.priority)}`}>
-                        {getPriorityText(ticket.priority)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(ticket.status)}`}>
-                        {getStatusText(ticket.status)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {new Date(ticket.created_at).toLocaleDateString('pt-BR')}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button
-                        onClick={() => fetchTicketDetails(ticket.id)}
-                        className="text-[#FFA500] hover:text-[#0d8bc7]"
-                      >
-                        Visualizar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="grid gap-4">
+          {tickets.map((ticket) => {
+            const statusConfig = getStatusConfig(ticket.status);
+            const priorityConfig = getPriorityConfig(ticket.priority);
+            const StatusIcon = statusConfig.icon;
+            
+            return (
+              <div 
+                key={ticket.id}
+                className="bg-white rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 overflow-hidden group"
+              >
+                <div className="p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className={`w-12 h-12 rounded-xl ${statusConfig.color.split(' ')[0]} flex items-center justify-center border ${statusConfig.color.split(' ')[1]}`}>
+                        <StatusIcon className="w-6 h-6" />
+                      </div>
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-4 mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-sm font-mono text-gray-500">#{ticket.id}</span>
+                            <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${statusConfig.badge}`}>
+                              {statusConfig.text}
+                            </span>
+                            <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${priorityConfig.color}`}>
+                              {priorityConfig.text}
+                            </span>
+                          </div>
+                          <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#FFB833] transition-colors">
+                            {ticket.subject}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            Criado em {new Date(ticket.created_at).toLocaleDateString('pt-BR', { 
+                              day: '2-digit', 
+                              month: 'long', 
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                        </div>
+                        
+                        <button
+                          onClick={() => fetchTicketDetails(ticket.id)}
+                          className="flex-shrink-0 px-6 py-2.5 bg-gradient-to-r from-[#FFB833] to-[#FFA500] text-white text-sm font-semibold rounded-xl hover:from-[#FFA500] hover:to-[#FF8C00] transition-all duration-200 shadow-sm hover:shadow-md"
+                        >
+                          Visualizar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
       {showCreateModal && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
+            <div className="p-8">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Criar Novo Ticket</h2>
-                <button onClick={() => setShowCreateModal(false)} className="text-gray-400 hover:text-gray-600">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Criar Novo Ticket</h2>
+                  <p className="text-gray-600 mt-1">Descreva seu problema e nossa equipe irá ajudá-lo</p>
+                </div>
+                <button 
+                  onClick={() => setShowCreateModal(false)} 
+                  className="text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100 p-2"
+                >
                   <X className="w-6 h-6" />
                 </button>
               </div>
-              <form onSubmit={createTicket}>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Assunto</label>
-                    <input
-                      type="text"
-                      required
-                      value={newTicket.subject}
-                      onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFA500]"
-                      placeholder="Descreva brevemente o problema"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Prioridade</label>
-                    <select
-                      value={newTicket.priority}
-                      onChange={(e) => setNewTicket({ ...newTicket, priority: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFA500]"
-                    >
-                      <option value="low">Baixa</option>
-                      <option value="medium">Média</option>
-                      <option value="high">Alta</option>
-                      <option value="urgent">Urgente</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Mensagem</label>
-                    <textarea
-                      required
-                      value={newTicket.message}
-                      onChange={(e) => setNewTicket({ ...newTicket, message: e.target.value })}
-                      rows="6"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFA500]"
-                      placeholder="Descreva detalhadamente o problema"
-                    />
-                  </div>
+              
+              <form onSubmit={createTicket} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Assunto *</label>
+                  <input
+                    type="text"
+                    required
+                    value={newTicket.subject}
+                    onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFB833] focus:border-transparent transition-all"
+                    placeholder="Ex: Problema com servidor, dúvida sobre faturamento..."
+                  />
                 </div>
-                <div className="mt-6 flex gap-3">
+                
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Prioridade *</label>
+                  <select
+                    value={newTicket.priority}
+                    onChange={(e) => setNewTicket({ ...newTicket, priority: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFB833] focus:border-transparent transition-all"
+                  >
+                    <option value="low">🟢 Baixa - Não urgente</option>
+                    <option value="medium">🟡 Média - Normal</option>
+                    <option value="high">🟠 Alta - Importante</option>
+                    <option value="urgent">🔴 Urgente - Crítico</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Mensagem *</label>
+                  <textarea
+                    required
+                    value={newTicket.message}
+                    onChange={(e) => setNewTicket({ ...newTicket, message: e.target.value })}
+                    rows={6}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFB833] focus:border-transparent transition-all resize-none"
+                    placeholder="Descreva detalhadamente o problema ou sua dúvida..."
+                  />
+                </div>
+                
+                <div className="flex gap-3 pt-4">
                   <button
                     type="submit"
-                    className="flex-1 px-4 py-2 bg-[#FFA500] text-white rounded-md hover:bg-[#0d8bc7] transition-colors"
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-[#FFB833] to-[#FFA500] text-white font-semibold rounded-xl hover:from-[#FFA500] hover:to-[#FF8C00] transition-all duration-200 shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40"
                   >
                     Criar Ticket
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowCreateModal(false)}
-                    className="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                    className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-200"
                   >
                     Cancelar
                   </button>
@@ -269,59 +286,82 @@ export default function Support() {
       )}
 
       {selectedTicket && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
+            <div className="p-8">
               <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">{selectedTicket.subject}</h2>
-                  <div className="flex gap-3 text-sm">
-                    <span className={`px-2 py-1 rounded-full ${getStatusColor(selectedTicket.status)}`}>
-                      {getStatusText(selectedTicket.status)}
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-sm font-mono text-gray-500">#{selectedTicket.id}</span>
+                    <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${getStatusConfig(selectedTicket.status).badge}`}>
+                      {getStatusConfig(selectedTicket.status).text}
                     </span>
-                    <span className={`font-medium ${getPriorityColor(selectedTicket.priority)}`}>
-                      Prioridade: {getPriorityText(selectedTicket.priority)}
+                    <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${getPriorityConfig(selectedTicket.priority).color}`}>
+                      {getPriorityConfig(selectedTicket.priority).text}
                     </span>
                   </div>
+                  <h2 className="text-2xl font-bold text-gray-900">{selectedTicket.subject}</h2>
                 </div>
-                <button onClick={() => setSelectedTicket(null)} className="text-gray-400 hover:text-gray-600">
+                <button 
+                  onClick={() => setSelectedTicket(null)} 
+                  className="text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100 p-2"
+                >
                   <X className="w-6 h-6" />
                 </button>
               </div>
 
-              <div className="space-y-4 mb-6">
+              <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
                 {selectedTicket.replies && selectedTicket.replies.map((reply) => (
-                  <div key={reply.id} className={`border-l-4 pl-4 py-2 ${reply.is_staff ? 'border-green-500' : 'border-gray-300'}`}>
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
-                      <span className="font-medium">{reply.is_staff ? 'Suporte' : reply.user_name || 'Você'}</span>
-                      <span>{new Date(reply.created_at).toLocaleString('pt-BR')}</span>
+                  <div 
+                    key={reply.id} 
+                    className={`rounded-xl p-4 ${reply.is_staff ? 'bg-gradient-to-br from-blue-50 to-blue-100/50 border-l-4 border-blue-500' : 'bg-gradient-to-br from-gray-50 to-gray-100/50 border-l-4 border-gray-300'}`}
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${reply.is_staff ? 'bg-gradient-to-br from-blue-500 to-blue-600' : 'bg-gradient-to-br from-gray-500 to-gray-600'}`}>
+                        {reply.is_staff ? 'S' : 'V'}
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-900">
+                          {reply.is_staff ? '👨‍💼 Equipe de Suporte' : '👤 ' + (reply.user_name || 'Você')}
+                        </span>
+                        <span className="text-sm text-gray-600 ml-2">
+                          {new Date(reply.created_at).toLocaleString('pt-BR', { 
+                            day: '2-digit', 
+                            month: 'short', 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-gray-900 whitespace-pre-wrap">{reply.message}</div>
+                    <div className="text-gray-900 whitespace-pre-wrap pl-11">{reply.message}</div>
                   </div>
                 ))}
                 
                 {(!selectedTicket.replies || selectedTicket.replies.length === 0) && (
-                  <div className="text-center text-gray-500 py-8">
-                    Nenhuma mensagem ainda
+                  <div className="text-center text-gray-500 py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                    <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                    <p className="font-medium">Nenhuma mensagem ainda</p>
+                    <p className="text-sm mt-1">Seja o primeiro a responder</p>
                   </div>
                 )}
               </div>
 
               {selectedTicket.status !== 'closed' && (
-                <form onSubmit={replyToTicket} className="border-t pt-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Adicionar Resposta</label>
+                <form onSubmit={replyToTicket} className="border-t border-gray-200 pt-6">
+                  <label className="block text-sm font-semibold text-gray-900 mb-3">Adicionar Resposta</label>
                   <textarea
                     value={replyMessage}
                     onChange={(e) => setReplyMessage(e.target.value)}
-                    rows="4"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFA500]"
+                    rows={4}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFB833] focus:border-transparent transition-all resize-none"
                     placeholder="Digite sua resposta..."
                   />
                   <div className="mt-4 flex gap-3">
                     <button
                       type="submit"
                       disabled={!replyMessage.trim()}
-                      className="inline-flex items-center px-4 py-2 bg-[#FFA500] text-white rounded-md hover:bg-[#0d8bc7] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#FFB833] to-[#FFA500] text-white font-semibold rounded-xl hover:from-[#FFA500] hover:to-[#FF8C00] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40"
                     >
                       <Send className="w-4 h-4 mr-2" />
                       Enviar Resposta
@@ -329,12 +369,19 @@ export default function Support() {
                     <button
                       type="button"
                       onClick={() => setSelectedTicket(null)}
-                      className="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                      className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-200"
                     >
                       Fechar
                     </button>
                   </div>
                 </form>
+              )}
+
+              {selectedTicket.status === 'closed' && (
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center gap-3">
+                  <AlertCircle className="w-5 h-5 text-gray-600" />
+                  <p className="text-sm text-gray-700">Este ticket está fechado e não aceita mais respostas.</p>
+                </div>
               )}
             </div>
           </div>
