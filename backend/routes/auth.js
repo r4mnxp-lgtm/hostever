@@ -1,60 +1,67 @@
-import express from 'express';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
-import { getUserByEmail, createUser, getUserById } from '../models/userModel.js';
-import { createActivityLog } from '../models/activityLogModel.js';
-import { validateCPFCNPJ, fetchAddressByCEP } from '../utils/validators.js';
-import { sendWelcomeEmail } from '../services/emailService.js';
-import pool from '../config/database.js';
+import express from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import {
+  getUserByEmail,
+  createUser,
+  getUserById,
+} from "../models/userModel.js";
+import { createActivityLog } from "../models/activityLogModel.js";
+import { validateCPFCNPJ, fetchAddressByCEP } from "../utils/validators.js";
+import { sendWelcomeEmail } from "../services/emailService.js";
+import pool from "../config/database.js";
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'hostever_secret_key_change_in_production';
+const JWT_SECRET =
+  process.env.JWT_SECRET || "hostever_secret_key_change_in_production";
 
-router.post('/validate-cpf', async (req, res) => {
+router.post("/validate-cpf", async (req, res) => {
   try {
     const { cpfCnpj } = req.body;
-    
+
     if (!cpfCnpj) {
-      return res.status(400).json({ error: 'CPF/CNPJ não fornecido', valid: false });
+      return res
+        .status(400)
+        .json({ error: "CPF/CNPJ não fornecido", valid: false });
     }
 
     const isValid = validateCPFCNPJ(cpfCnpj);
-    
+
     if (!isValid) {
-      return res.json({ valid: false, message: 'CPF/CNPJ inválido' });
+      return res.json({ valid: false, message: "CPF/CNPJ inválido" });
     }
 
-    res.json({ valid: true, message: 'CPF/CNPJ válido' });
+    res.json({ valid: true, message: "CPF/CNPJ válido" });
   } catch (error) {
-    console.error('Validate CPF error:', error);
-    res.status(500).json({ error: 'Erro ao validar CPF/CNPJ', valid: false });
+    console.error("Validate CPF error:", error);
+    res.status(500).json({ error: "Erro ao validar CPF/CNPJ", valid: false });
   }
 });
 
-router.post('/fetch-address', async (req, res) => {
+router.post("/fetch-address", async (req, res) => {
   try {
     const { cep } = req.body;
-    
+
     if (!cep) {
-      return res.status(400).json({ error: 'CEP não fornecido' });
+      return res.status(400).json({ error: "CEP não fornecido" });
     }
 
     const address = await fetchAddressByCEP(cep);
     res.json({ success: true, address });
   } catch (error) {
-    console.error('Fetch address error:', error);
-    res.status(400).json({ error: error.message || 'Erro ao buscar endereço' });
+    console.error("Fetch address error:", error);
+    res.status(400).json({ error: error.message || "Erro ao buscar endereço" });
   }
 });
 
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
-    const { 
-      name, 
-      email, 
-      password, 
-      phone, 
+    const {
+      name,
+      email,
+      password,
+      phone,
       cpf_cnpj,
       cep,
       street,
@@ -63,24 +70,27 @@ router.post('/register', async (req, res) => {
       neighborhood,
       city,
       state,
-      accepted_terms
+      accepted_terms,
     } = req.body;
 
     if (!name || !email || !password) {
-      return res.status(400).json({ error: 'Campos obrigatórios faltando' });
+      return res.status(400).json({ error: "Campos obrigatórios faltando" });
     }
 
     if (!accepted_terms) {
-      return res.status(400).json({ error: 'Você precisa aceitar os termos de uso' });
+      return res
+        .status(400)
+        .json({ error: "Você precisa aceitar os termos de uso" });
     }
 
     if (cpf_cnpj && !validateCPFCNPJ(cpf_cnpj)) {
-      return res.status(400).json({ error: 'CPF/CNPJ inválido' });
+      return res.status(400).json({ error: "CPF/CNPJ inválido" });
     }
 
     const existingUser = await getUserByEmail(email);
+    console.log(existingUser);
     if (existingUser) {
-      return res.status(400).json({ error: 'E-mail já cadastrado' });
+      return res.status(400).json({ error: "E-mail já cadastrado" });
     }
 
     const password_hash = await bcrypt.hash(password, 10);
@@ -99,40 +109,38 @@ router.post('/register', async (req, res) => {
       city,
       state,
       accepted_terms: true,
-      role: 'client',
+      role: "client",
     });
 
-    const token = jwt.sign(
-      { userId, email, role: 'client' },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    const token = jwt.sign({ userId, email, role: "client" }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     await createActivityLog({
       user_id: userId,
-      action: 'user_registered',
-      entity_type: 'user',
+      action: "user_registered",
+      entity_type: "user",
       entity_id: userId,
       description: `Novo usuário registrado: ${name}`,
       ip_address: req.ip,
     });
 
-    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationToken = crypto.randomBytes(32).toString("hex");
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    
+
     await pool.query(
-      'UPDATE users SET email_verification_token = ?, email_verification_expires = ? WHERE id = ?',
-      [verificationToken, expiresAt, userId]
+      "UPDATE users SET email_verification_token = ?, email_verification_expires = ? WHERE id = ?",
+      [verificationToken, expiresAt, userId],
     );
 
-    sendWelcomeEmail(email, name, verificationToken).catch(err => 
-      console.error('Error sending welcome email:', err)
+    sendWelcomeEmail(email, name, verificationToken).catch((err) =>
+      console.error("Error sending welcome email:", err),
     );
 
     const user = await getUserById(userId);
 
-    res.json({ 
-      message: 'Conta criada com sucesso', 
+    res.json({
+      message: "Conta criada com sucesso",
       userId,
       token,
       user: {
@@ -140,42 +148,42 @@ router.post('/register', async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-      }
+      },
     });
   } catch (error) {
-    console.error('Register error:', error);
-    res.status(500).json({ error: 'Erro ao criar conta' });
+    console.log("Register error:", error);
+    res.status(500).json({ error: "Erro ao criar conta" });
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await getUserByEmail(email);
     if (!user) {
-      return res.status(401).json({ error: 'E-mail ou senha incorretos' });
+      return res.status(401).json({ error: "E-mail ou senha incorretos" });
     }
 
     const validPassword = await bcrypt.compare(password, user.password_hash);
     if (!validPassword) {
-      return res.status(401).json({ error: 'E-mail ou senha incorretos' });
+      return res.status(401).json({ error: "E-mail ou senha incorretos" });
     }
 
-    if (user.status !== 'active') {
-      return res.status(403).json({ error: 'Conta suspensa ou inativa' });
+    if (user.status !== "active") {
+      return res.status(403).json({ error: "Conta suspensa ou inativa" });
     }
 
     const token = jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
       JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: "7d" },
     );
 
     await createActivityLog({
       user_id: user.id,
-      action: 'user_login',
-      entity_type: 'user',
+      action: "user_login",
+      entity_type: "user",
       entity_id: user.id,
       description: `Login realizado`,
       ip_address: req.ip,
@@ -191,16 +199,16 @@ router.post('/login', async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Erro ao fazer login' });
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Erro ao fazer login" });
   }
 });
 
-router.get('/me', verifyToken, async (req, res) => {
+router.get("/me", verifyToken, async (req, res) => {
   try {
     const user = await getUserById(req.userId);
     if (!user) {
-      return res.status(404).json({ error: 'Usuário não encontrado' });
+      return res.status(404).json({ error: "Usuário não encontrado" });
     }
 
     res.json({
@@ -220,66 +228,66 @@ router.get('/me', verifyToken, async (req, res) => {
       email_verified: user.email_verified || false,
     });
   } catch (error) {
-    console.error('Get user error:', error);
-    res.status(500).json({ error: 'Erro ao buscar usuário' });
+    console.error("Get user error:", error);
+    res.status(500).json({ error: "Erro ao buscar usuário" });
   }
 });
 
-router.post('/verify-email', async (req, res) => {
+router.post("/verify-email", async (req, res) => {
   try {
     const { token } = req.body;
-    
+
     const [users] = await pool.query(
-      'SELECT * FROM users WHERE email_verification_token = ? AND email_verification_expires > NOW()',
-      [token]
+      "SELECT * FROM users WHERE email_verification_token = ? AND email_verification_expires > NOW()",
+      [token],
     );
-    
+
     if (users.length === 0) {
-      return res.status(400).json({ error: 'Token inválido ou expirado' });
+      return res.status(400).json({ error: "Token inválido ou expirado" });
     }
-    
+
     await pool.query(
-      'UPDATE users SET email_verified = TRUE, email_verification_token = NULL, email_verification_expires = NULL WHERE id = ?',
-      [users[0].id]
+      "UPDATE users SET email_verified = TRUE, email_verification_token = NULL, email_verification_expires = NULL WHERE id = ?",
+      [users[0].id],
     );
-    
-    res.json({ success: true, message: 'E-mail verificado com sucesso!' });
+
+    res.json({ success: true, message: "E-mail verificado com sucesso!" });
   } catch (error) {
-    console.error('Email verification error:', error);
-    res.status(500).json({ error: 'Erro ao verificar e-mail' });
+    console.error("Email verification error:", error);
+    res.status(500).json({ error: "Erro ao verificar e-mail" });
   }
 });
 
-router.post('/resend-verification', verifyToken, async (req, res) => {
+router.post("/resend-verification", verifyToken, async (req, res) => {
   try {
     const user = await getUserById(req.userId);
-    
+
     if (user.email_verified) {
-      return res.status(400).json({ error: 'E-mail já verificado' });
+      return res.status(400).json({ error: "E-mail já verificado" });
     }
-    
-    const verificationToken = crypto.randomBytes(32).toString('hex');
+
+    const verificationToken = crypto.randomBytes(32).toString("hex");
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    
+
     await pool.query(
-      'UPDATE users SET email_verification_token = ?, email_verification_expires = ? WHERE id = ?',
-      [verificationToken, expiresAt, req.userId]
+      "UPDATE users SET email_verification_token = ?, email_verification_expires = ? WHERE id = ?",
+      [verificationToken, expiresAt, req.userId],
     );
-    
+
     await sendWelcomeEmail(user.email, user.name, verificationToken);
-    
-    res.json({ success: true, message: 'E-mail de verificação reenviado!' });
+
+    res.json({ success: true, message: "E-mail de verificação reenviado!" });
   } catch (error) {
-    console.error('Resend verification error:', error);
-    res.status(500).json({ error: 'Erro ao reenviar e-mail' });
+    console.error("Resend verification error:", error);
+    res.status(500).json({ error: "Erro ao reenviar e-mail" });
   }
 });
 
 function verifyToken(req, res, next) {
-  const token = req.headers['authorization']?.replace('Bearer ', '');
+  const token = req.headers["authorization"]?.replace("Bearer ", "");
 
   if (!token) {
-    return res.status(401).json({ error: 'Token não fornecido' });
+    return res.status(401).json({ error: "Token não fornecido" });
   }
 
   try {
@@ -289,7 +297,7 @@ function verifyToken(req, res, next) {
     req.user = { id: decoded.userId, role: decoded.role, email: decoded.email };
     next();
   } catch (error) {
-    return res.status(401).json({ error: 'Token inválido' });
+    return res.status(401).json({ error: "Token inválido" });
   }
 }
 

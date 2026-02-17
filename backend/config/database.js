@@ -1,14 +1,15 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
+import path from "path";
 
-dotenv.config({ path: "../.env" });
+dotenv.config({ path: path.join(process.cwd(), ".env") });
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || "69.166.232.50",
-  port: process.env.DB_PORT || 16640,
-  user: process.env.DB_USER || "nhdbadmin",
-  password: process.env.DB_PASSWORD || "oxRvI7jGR97DGhPU4gIvFmyS9qfnHWlb",
-  database: process.env.DB_DATABASE || "defaultdb",
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
